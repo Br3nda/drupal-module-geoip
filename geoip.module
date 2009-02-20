@@ -1,5 +1,5 @@
 <?php
-// $Id: geoip.module,v 1.1 2009/02/20 17:47:21 rz Exp $
+// $Id: geoip.module,v 1.2 2009/02/20 21:57:51 rz Exp $
 
 /**
  * @file
@@ -67,6 +67,13 @@ function geoip_admin_settings() {
     '#after_build' => array('geoip_data_file_validate'),
   );
 
+  $form['geoip_debug'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('GeoIP debug mode'),
+    '#description' => t('With this setting enabled, an IP may be passed in through the query string using the GEOIP_DEBUG parameter. This should not be used on production sites.'),
+    '#default_value' => variable_get('geoip_debug', FALSE),
+  );
+
   return system_settings_form($form);
 }
 
@@ -115,7 +122,7 @@ function _geoip_info($ip) {
  * Helper function to get the current ip address
  */
 function geoip_ip_address() {
-  if ($_GET['geoip_debug']) {
+  if (variable_get('geoip_debug', FALSE) && $_GET['geoip_debug']) {
     $ip = $_GET['geoip_debug'];
     drupal_set_message('Using IP: '. $ip .'.');
   }
