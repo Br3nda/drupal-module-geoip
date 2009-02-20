@@ -1,0 +1,6 @@
+// $Id: INSTALL.txt,v 1.1 2009/02/20 17:47:21 rz Exp $
+
+Then download the GeoLite Country binary format data file from
+http://geolite.maxmind.com/download/geoip/database/GeoLiteCountry/GeoIP.dat.gz
+The default location for this file is in the root of the geoip module directory,
+but is configurable through the interface.
