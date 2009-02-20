@@ -1,4 +1,4 @@
-; $Id: geoip.info,v 1.1 2009/02/20 17:47:21 rz Exp $
+; $Id: geoip.info,v 1.1.2.1 2009/02/20 22:04:54 rz Exp $
 name = GeoIP
 description = API for using the MaxMind GeoLite Country database
-core = 6.x
+

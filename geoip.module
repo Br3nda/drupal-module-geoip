@@ -1,5 +1,5 @@
 <?php
-// $Id: geoip.module,v 1.2 2009/02/20 21:57:51 rz Exp $
+// $Id: geoip.module,v 1.2.2.1 2009/02/20 22:04:54 rz Exp $
 
 /**
  * @file
@@ -7,16 +7,19 @@
  */
 
 /**
- * Implementation of hook_user().
+ * Implementation of hook_menu().
  */
-function geoip_menu() {
-  $items['admin/settings/geoip'] = array(
-    'title' => 'GeoIP',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('geoip_admin_settings'),
-    'access arguments' => array('administer site configuration'),
-  );
-
+function geoip_menu($may_cache) {
+  $items = array();
+  if ($may_cache) {
+    $items[] = array(
+      'path' => 'admin/settings/geoip',
+      'title' => t('GeoIP'),
+      'callback' => 'drupal_get_form',
+      'callback arguments' => array('geoip_admin_settings'),
+      'access' => user_access('administer site configuration')
+    );
+  }
   return $items;
 }
 
@@ -127,7 +130,7 @@ function geoip_ip_address() {
     drupal_set_message('Using IP: '. $ip .'.');
   }
   else {
-    $ip = ip_address();
+    $ip = $_SERVER['REMOTE_ADDR'];
   }
   return $ip;
 }
@@ -159,7 +162,7 @@ function geoip_instance() {
     drupal_set_message(t('Please <a href="!url">configure</a> the GeoIP data file location.', array('!url' => url('admin/settings/geoip'))));
     return FALSE;
   }
-  module_load_include('inc', 'geoip', 'lib/geoip');
+  include_once(drupal_get_path('module', 'geoip') .'/lib/geoip.inc');
   $instance = geoip_open($data_file, GEOIP_STANDARD);
 
   return $instance;
