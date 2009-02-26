@@ -1,13 +1,13 @@
 <?php
-// $Id: geoip.module,v 1.2 2009/02/20 21:57:51 rz Exp $
+// $Id: geoip.module,v 1.3 2009/02/26 04:29:14 rz Exp $
 
 /**
  * @file
- * API for using the MaxMind GeoLite Country database
+ * API for using the MaxMind GeoLite Country database.
  */
 
 /**
- * Implementation of hook_user().
+ * Implementation of hook_menu().
  */
 function geoip_menu() {
   $items['admin/settings/geoip'] = array(
