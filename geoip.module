@@ -1,5 +1,5 @@
 <?php
-// $Id: geoip.module,v 1.4 2009/02/27 22:18:17 rz Exp $
+// $Id: geoip.module,v 1.5 2009/09/10 20:48:31 rz Exp $
 
 /**
  * @file
@@ -34,7 +34,7 @@ function geoip_requirements($phase) {
     'title' => $t('GeoIP Database'),
   );
 
-  $file = variable_get('geoip_data_file', FALSE);
+  $file = geoip_data_file();
 
   if (!$file || !file_exists($file)) {
     $requirements['geoip_database']['value'] = l('Missing', 'admin/settings/geoip');
@@ -74,25 +74,63 @@ function geoip_ip_address() {
  * Singleton wrapper around geoip_open().
  */
 function geoip_instance() {
-  $data_file = variable_get('geoip_data_file', FALSE);
+  $data_file = geoip_data_file();
   if (!$data_file || !file_exists($data_file)) {
-    if (user_access('administer site configuration')) {
-      drupal_set_message(t('Please <a href="!url">configure</a> the GeoIP data file location.', array('!url' => url('admin/settings/geoip'))));
-    }
     return FALSE;
   }
 
   // geoip.inc is common to both database types
-  module_load_include('inc', 'geoip', 'lib/geoip');
-
+  _geoip_load_lib();
   $instance = geoip_open($data_file, GEOIP_STANDARD);
 
   // conditionally load the geoipcity include file
   if ($instance->databaseType == GEOIP_CITY_EDITION_REV1) {
-    module_load_include('inc', 'geoip', 'lib/geoipcity');
+    _geoip_load_lib('geoipcity.inc');
   }
 
   return $instance;
+}
+
+/**
+ * Get the file path of the geoip module.  This is a wrapper around
+ * drupal_get_path() that falls back to simply using the directory of the
+ * module file if too early in the bootstrap.
+ */
+function geoip_get_path() {
+  if (function_exists('drupal_get_path')) {
+    // Let drupal set the path
+    $path = drupal_get_path('module', 'geoip');
+  }
+  else {
+    // Fallback to trying to find the path based on PHP's knowledge of our
+    // current path.
+    $path = dirname(__FILE__);
+  }
+  return $path;
+}
+
+/**
+ * Return the path of the GeoIP.dat data file.
+ */
+function geoip_data_file() {
+  return variable_get('geoip_data_file', geoip_get_path() .'/data/GeoIP.dat');
+}
+
+/**
+ * Include the external geoip libraries.
+ *
+ * @param
+ *   The file to be included.  Must reside in the lib sub-directory.
+ */
+function _geoip_load_lib($file = 'geoip.inc') {
+  static $loaded = array();
+
+  // If we've haven't tried to include geoip.inc do so. Otherwise, just fall
+  // through.
+  if (!isset($loaded[$file])) {
+    $loaded[$file] = TRUE;
+    include_once(geoip_get_path() . '/lib/'. $file);
+  }
 }
 
 /**
@@ -158,6 +196,18 @@ function geoip_region_name($country_code, $region_code) {
   }
 
   return $GEOIP_REGION_NAME[$country_code][$region_code];
+}
+
+/**
+ * Return a list of country codes as specified by http://www.maxmind.com/app/iso3166
+ */
+function geoip_country_values() {
+  static $countries = NULL;
+  if (!isset($countries)) {
+    module_load_include('inc', 'geoip', 'geoip.values');
+    $countries = _geoip_country_values();
+  }
+  return $countries;
 }
 
 /**
