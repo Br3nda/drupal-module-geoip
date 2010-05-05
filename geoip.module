@@ -1,5 +1,5 @@
 <?php
-// $Id: geoip.module,v 1.5 2009/09/10 20:48:31 rz Exp $
+// $Id: geoip.module,v 1.6 2010/05/05 15:09:49 drewish Exp $
 
 /**
  * @file
@@ -12,6 +12,7 @@
 function geoip_menu() {
   $items['admin/settings/geoip'] = array(
     'title' => 'GeoIP',
+    'description' => 'Configure the path to the GeoIP database.',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('geoip_admin_settings'),
     'access arguments' => array('administer site configuration'),
@@ -113,7 +114,7 @@ function geoip_get_path() {
  * Return the path of the GeoIP.dat data file.
  */
 function geoip_data_file() {
-  return variable_get('geoip_data_file', geoip_get_path() .'/data/GeoIP.dat');
+  return variable_get('geoip_data_file', 'sites/all/libraries/geoip/GeoIP.dat');
 }
 
 /**

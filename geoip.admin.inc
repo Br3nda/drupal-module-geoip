@@ -1,5 +1,5 @@
 <?php
-// $Id: geoip.admin.inc,v 1.1 2009/02/27 22:18:17 rz Exp $
+// $Id: geoip.admin.inc,v 1.2 2010/05/05 15:09:49 drewish Exp $
 
 /**
  * @file
@@ -14,7 +14,7 @@ function geoip_admin_settings() {
     '#type' => 'textfield',
     '#title' => t('GeoIP data file location'),
     '#description' => t('The path to the GeoIP database file.'),
-    '#default_value' => variable_get('geoip_data_file', drupal_get_path('module', 'geoip') .'/data/GeoIP.dat'),
+    '#default_value' => variable_get('geoip_data_file', 'sites/all/libraries/geoip/GeoIP.dat'),
     '#after_build' => array('geoip_data_file_validate'),
   );
 
