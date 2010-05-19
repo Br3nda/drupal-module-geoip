@@ -1,5 +1,5 @@
 <?php
-// $Id: geoip_language.admin.inc,v 1.1 2009/07/13 01:37:15 rz Exp $
+// $Id: geoip_language.admin.inc,v 1.2 2010/05/19 16:15:41 drewish Exp $
 
 /**
  * @file
@@ -19,12 +19,12 @@ function geoip_language_settings_overview() {
   $mapping = geoip_language_mappings();
 
   $rows = array();
-  foreach ($mapping as $country => $language) {
+  foreach ($mapping as $country => $info) {
     $rows[] = array(
       $country,
       $countries[$country],
-      $language,
-      $languages[$language],
+      $info->language,
+      $languages[$info->language],
       l(t('Delete'), 'admin/settings/language/geoip/delete/'. $country, array('query' => drupal_get_destination())),
     );
   }
