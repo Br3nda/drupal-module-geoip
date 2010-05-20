@@ -1,5 +1,5 @@
 <?php
-// $Id: geoip.admin.inc,v 1.2 2010/05/05 15:09:49 drewish Exp $
+// $Id: geoip.admin.inc,v 1.3 2010/05/20 21:05:28 drewish Exp $
 
 /**
  * @file
@@ -17,11 +17,10 @@ function geoip_admin_settings() {
     '#default_value' => variable_get('geoip_data_file', 'sites/all/libraries/geoip/GeoIP.dat'),
     '#after_build' => array('geoip_data_file_validate'),
   );
-
   $form['geoip_debug'] = array(
     '#type' => 'checkbox',
     '#title' => t('GeoIP debug mode'),
-    '#description' => t('With this setting enabled, an IP may be passed in through the query string using the GEOIP_DEBUG parameter. This should not be used on production sites.'),
+    '#description' => t('With this setting enabled, an IP may be passed in through the query string using the <kbd>geoip_debug</kbd> parameter. This should not be used on production sites.'),
     '#default_value' => variable_get('geoip_debug', FALSE),
   );
 
