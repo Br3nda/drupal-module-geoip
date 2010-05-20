@@ -1,5 +1,5 @@
 <?php
-// $Id: geoip_language.module,v 1.5 2010/05/20 21:22:56 drewish Exp $
+// $Id: geoip_language.module,v 1.6 2010/05/20 21:38:21 drewish Exp $
 
 /**
  * @file
@@ -208,6 +208,9 @@ function geoip_language_mapping_delete($country) {
 
 /**
  * API function to return the country-language mapping.
+ *
+ * TODO: Serializing to a text file is insane. This should go into the cache
+ * table instead.
  */
 function geoip_language_mappings($reset = FALSE) {
   static $mapping = NULL;
@@ -229,7 +232,7 @@ function geoip_language_mappings($reset = FALSE) {
       $result = db_query('SELECT g.*, l.prefix FROM {geoip_language} g INNER JOIN {languages} l on g.language = l.language ORDER BY g.country ASC');
       while ($row = db_fetch_object($result)) {
         $mapping[$row->country] = $row->language;
-        $data['geoip'][$row->country] = $row->prefix;
+        $data['geoip'][$row->country] = $row;
       }
 
       // Add default
@@ -257,8 +260,8 @@ function geoip_language_detect_language($reset = FALSE) {
 
     // Make sure country_code, the mapping for that country_code, and the enabled
     // language for that mapping, all exist.
-    if ($country_code && $mappings[$country_code] && $languages[$mappings[$country_code]]) {
-      $geoip_language = $languages[$mappings[$country_code]];
+    if ($country_code && $mappings[$country_code] && $languages[$mappings[$country_code]->language]) {
+      $geoip_language = $languages[$mappings[$country_code]->language];
     }
     else {
       $geoip_language = language_default();
