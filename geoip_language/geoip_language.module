@@ -1,5 +1,5 @@
 <?php
-// $Id: geoip_language.module,v 1.4 2010/05/20 21:19:47 drewish Exp $
+// $Id: geoip_language.module,v 1.5 2010/05/20 21:22:56 drewish Exp $
 
 /**
  * @file
@@ -125,14 +125,15 @@ function geoip_language_negotiation() {
   // Abort the redirect if bootstrap happened outside of index.php or if the
   // requested path is inside the files directory
   if (($_SERVER['SCRIPT_NAME'] != $base_path .'index.php')
-    || (strpos($_GET['q'], file_directory_path()) === 0)) {
+    || (strpos($_GET['q'], file_directory_path()) === 0)
+    || ($_SERVER['REQUEST_METHOD'] == 'POST')) {
     return;
   }
 
   // Now that the language is detected, do an absolute redirect to avoid page
   // caching in the wrong language.
   $url = url($_GET['q'], array('language' => $language, 'absolute' => TRUE, 'query' => drupal_query_string_encode($_GET, array('q'))));
-  drupal_goto($url);
+  drupal_goto($url, NULL, NULL, 301);
   exit();
 }
 
