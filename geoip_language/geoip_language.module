@@ -1,5 +1,5 @@
 <?php
-// $Id: geoip_language.module,v 1.2 2009/10/11 18:12:40 rz Exp $
+// $Id: geoip_language.module,v 1.3 2010/05/20 21:18:28 drewish Exp $
 
 /**
  * @file
@@ -55,9 +55,11 @@ function geoip_language_init() {
   // Configured presentation language mode.
   $mode = variable_get('language_negotiation', LANGUAGE_NEGOTIATION_NONE);
 
+  $drush = (function_exists('drush_verify_cli') && drush_verify_cli());
+
   // Only take action if language negotiation is set to GeoIP and there is more
   // than 1 enabled language.
-  if (($mode == GEOIP_LANGUAGE_NEGOTIATION_PATH) && ((int)variable_get('language_count', 1) > 1)) {
+  if (!$drush && ($mode == GEOIP_LANGUAGE_NEGOTIATION_PATH) && ((int)variable_get('language_count', 1) > 1)) {
     geoip_language_negotiation();
   }
 }
