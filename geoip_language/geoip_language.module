@@ -1,5 +1,5 @@
 <?php
-// $Id: geoip_language.module,v 1.3 2010/05/20 21:18:28 drewish Exp $
+// $Id: geoip_language.module,v 1.4 2010/05/20 21:19:47 drewish Exp $
 
 /**
  * @file
@@ -265,4 +265,14 @@ function geoip_language_detect_language($reset = FALSE) {
   }
 
   return $geoip_language;
+}
+
+/**
+ * Implementation of hook_flush_caches().
+ */
+function geoip_language_flush_caches() {
+  // Reload the geoip cache file.
+  geoip_language_mappings(TRUE);
+
+  return array();
 }
