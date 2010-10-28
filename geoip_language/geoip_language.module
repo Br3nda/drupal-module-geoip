@@ -1,5 +1,5 @@
 <?php
-// $Id: geoip_language.module,v 1.7 2010/10/28 21:45:56 drewish Exp $
+// $Id: geoip_language.module,v 1.8 2010/10/28 21:47:28 drewish Exp $
 
 /**
  * @file
@@ -93,8 +93,11 @@ function geoip_language_negotiation() {
       $_GET['q'] = implode('/', $args);
       // Re-initialize the path.
       drupal_init_path();
-      // Save the language code in a session variable for later use.
-      $_SESSION['geoip_language'] = $language->language;
+      // Make PressFlow happy by only storing the language code if there's an
+      // existing session.
+      if (count($_SESSION)) {
+        $_SESSION['geoip_language'] = $language->language;
+      }
       return;
     }
   }
@@ -105,7 +108,7 @@ function geoip_language_negotiation() {
 
   global $user;
   // First check to see if a language was previously determined.
-  if ($_SESSION['geoip_language'] && isset($languages[$_SESSION['geoip_language']])) {
+  if (isset($_SESSION['geoip_language']) && isset($languages[$_SESSION['geoip_language']])) {
     $language = $languages[$_SESSION['geoip_language']];
   }
   // Fallback for user-preferred language.
