@@ -1,5 +1,5 @@
 <?php
-// $Id: geoip_language.module,v 1.6 2010/05/20 21:38:21 drewish Exp $
+// $Id: geoip_language.module,v 1.7 2010/10/28 21:45:56 drewish Exp $
 
 /**
  * @file
@@ -187,6 +187,7 @@ function geoip_language_mapping_create($country, $language) {
     'language' => $language,
   );
   drupal_write_record('geoip_language', $data);
+  geoip_language_mappings(TRUE);
 
   $countries = geoip_country_values();
   watchdog('geoip_language', 'GeoIP mapping created for %country', array('%country' => $countries[$country]));
@@ -199,11 +200,10 @@ function geoip_language_mapping_create($country, $language) {
  */
 function geoip_language_mapping_delete($country) {
   db_query('DELETE FROM {geoip_language} WHERE country="%s"', $country);
+  geoip_language_mappings(TRUE);
 
   $countries = geoip_country_values();
   watchdog('geoip_language', 'GeoIP mapping deleted for %country', array('%country' => $countries[$country]));
-
-  return db_affected_rows();
 }
 
 /**
